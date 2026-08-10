@@ -1,0 +1,13 @@
+[tools]
+
+# Stack ========================================================================
+
+# Node.js
+node = "lts"
+pnpm = "latest"
+
+
+# Settings =====================================================================
+
+[settings]
+idiomatic_version_file_enable_tools = ["rust"] # Use rust-toolchain.toml
