@@ -5,7 +5,7 @@ mod prelude;
 
 #[tokio::main]
 async fn main() {
-    match Cli::run().await {
+    match VitCli::run().await {
         Ok(_) => {}
 
         Err(err) => {

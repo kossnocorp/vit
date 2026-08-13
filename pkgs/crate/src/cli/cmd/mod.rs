@@ -1,31 +1,34 @@
 use super::prelude::*;
 
-mod runnable;
-pub use runnable::*;
-
 mod install;
 use install::*;
 
 mod add;
 use add::*;
 
+mod update;
+use update::*;
+
 #[derive(Subcommand)]
-pub enum CliCmd {
+pub enum VitCliCmd {
     /// Install dependencies
-    Install(CliCmdInstall),
+    Install(VitCliCmdInstall),
 
     /// Add a dependency
-    Add(CliCmdAdd),
+    Add(VitCliCmdAdd),
+
+    /// Update a dependency
+    Update(VitCliCmdUpdate),
 }
 
-impl CliCmd {
-    pub async fn run(cli: &Cli) -> Result<()> {
-        match &cli.command {
-            Some(CliCmd::Install(cmd)) => cmd.run(cli).await,
+impl VitCliCmd {
+    pub async fn run(&self) -> Result<()> {
+        match &self {
+            VitCliCmd::Install(cmd) => cmd.run().await,
 
-            Some(CliCmd::Add(cmd)) => cmd.run(cli).await,
+            VitCliCmd::Add(cmd) => cmd.run().await,
 
-            None => bail!("No command specified. Use --help for usage information."),
+            VitCliCmd::Update(cmd) => cmd.run().await,
         }
     }
 }

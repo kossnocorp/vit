@@ -1,16 +1,16 @@
 use crate::cli::prelude::*;
+use crate::vendor::update;
 
 #[derive(Args)]
-pub struct VitCliCmdInstall {
+pub struct VitCliCmdUpdate {
     #[command(flatten)]
     manifest_args: VitCliArgsManifest,
 
-    /// Never hit network, use only local cache.
-    #[arg(short, long, default_value_t = false)]
-    offline: bool,
+    #[arg(value_name = "FILE")]
+    file: String,
 }
 
-impl VitCliCmdInstall {
+impl VitCliCmdUpdate {
     pub async fn run(&self) -> Result<()> {
         todo!()
     }

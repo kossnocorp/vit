@@ -1,15 +1,17 @@
 use crate::cli::prelude::*;
+use crate::vendor::add;
 
 #[derive(Args)]
-pub struct CliCmdAdd {
+pub struct VitCliCmdAdd {
+    #[command(flatten)]
+    manifest_args: VitCliArgsManifest,
+
     #[arg(value_name = "FILE")]
     file: String,
 }
 
-impl CliCmdRunnable for CliCmdAdd {
-    async fn run(&self, cli: &Cli) -> Result<()> {
-        println!("CLI config={:?}", cli.manifest);
-        println!("Running add command with file={}", self.file);
-        Ok(())
+impl VitCliCmdAdd {
+    pub async fn run(&self) -> Result<()> {
+        todo!()
     }
 }
