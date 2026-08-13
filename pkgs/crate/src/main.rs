@@ -1,8 +1,28 @@
-use prelude::*;
+mod prelude;
 
 mod cli;
-mod prelude;
+pub use cli::*;
+
+mod state;
+pub use state::*;
+
+mod manifest;
+pub use manifest::*;
+
+mod target;
+pub use target::*;
+
+mod lock;
+pub use lock::*;
+
+mod download;
+pub use download::*;
+
+mod paths;
+pub use paths::*;
+
 mod vendor;
+pub use vendor::*;
 
 #[tokio::main]
 async fn main() {
