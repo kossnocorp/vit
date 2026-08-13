@@ -2,6 +2,7 @@ use prelude::*;
 
 mod cli;
 mod prelude;
+mod vendor;
 
 #[tokio::main]
 async fn main() {

@@ -12,6 +12,6 @@ pub struct VitCliCmdAdd {
 
 impl VitCliCmdAdd {
     pub async fn run(&self) -> Result<()> {
-        todo!()
+        add(self.manifest_args.manifest.as_deref(), &self.file).await
     }
 }
