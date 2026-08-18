@@ -1,6 +1,7 @@
 pub use crate::*;
 
-pub use anyhow::{Context, Result, bail, ensure};
+pub use anyhow::{Context, Error, Result, bail, ensure};
+pub use async_trait::async_trait;
 pub use directories::ProjectDirs;
 pub use serde::{Deserialize, Serialize};
 pub use sha2::{Digest, Sha256};

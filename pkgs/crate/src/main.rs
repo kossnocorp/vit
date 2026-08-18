@@ -9,17 +9,20 @@ pub use state::*;
 mod manifest;
 pub use manifest::*;
 
-mod target;
-pub use target::*;
-
 mod lock;
 pub use lock::*;
 
-mod download;
-pub use download::*;
+mod source;
+pub use source::*;
+
+pub mod file;
+pub use file::*;
 
 mod paths;
 pub use paths::*;
+
+mod dirs;
+pub use dirs::*;
 
 mod vendor;
 pub use vendor::*;

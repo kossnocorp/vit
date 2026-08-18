@@ -25,4 +25,12 @@ impl VitManifest {
     pub fn has(&self, path: impl AsRef<str>) -> bool {
         self.files.contains_key(path.as_ref())
     }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
+        self.files
+            .iter()
+            .map(|(key, version)| (key.as_str(), version.as_str()))
+    }
 }
+
+impl VitFileToml for VitManifest {}

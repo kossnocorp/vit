@@ -12,8 +12,6 @@ pub struct VitCliCmdInstall {
 
 impl VitCliCmdInstall {
     pub async fn run(&self) -> Result<()> {
-        println!("CLI config={:?}", self.manifest_args.manifest);
-        println!("Running install command with offline={}", self.offline);
-        Ok(())
+        VitVendor::install(self.manifest_args.manifest.as_deref(), self.offline).await
     }
 }

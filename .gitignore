@@ -2,3 +2,5 @@
 node_modules/
 # Rust
 /target/
+# Temp
+/tmp/

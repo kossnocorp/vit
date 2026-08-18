@@ -1,5 +1,4 @@
 use crate::cli::prelude::*;
-use crate::vendor::update;
 
 #[derive(Args)]
 pub struct VitCliCmdUpdate {
@@ -12,6 +11,6 @@ pub struct VitCliCmdUpdate {
 
 impl VitCliCmdUpdate {
     pub async fn run(&self) -> Result<()> {
-        update(self.manifest_args.manifest.as_deref(), &self.file).await
+        VitVendor::update(self.manifest_args.manifest.as_deref(), &self.file).await
     }
 }

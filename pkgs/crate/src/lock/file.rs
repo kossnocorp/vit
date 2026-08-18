@@ -10,20 +10,17 @@ pub struct VitLockFile {
 }
 
 impl VitLockFile {
-    pub fn new(spec: &VitTarget, download: &VitDownload, paths: &VitPaths) -> VitLockFile {
+    pub fn new(target: &dyn VitTarget, download: &VitSourceFile, paths: &VitPaths) -> VitLockFile {
         let hash = Sha256::digest(&download.bytes);
-        let target = paths.target(spec);
+        let path = paths.target(target);
         VitLockFile {
-            version: spec.version.clone(),
+            version: target.version().to_owned(),
             revision: download.revision.clone(),
             hash: format!("sha256:{hash:x}"),
-            source: format!(
-                "https://github.com/{}/{}/blob/{}/{}",
-                spec.owner, spec.repo, spec.version, spec.path
-            ),
-            path: target
+            source: target.source_url().to_owned(),
+            path: path
                 .strip_prefix(&paths.root)
-                .unwrap_or(&target)
+                .unwrap_or(&path)
                 .to_string_lossy()
                 .into_owned(),
         }

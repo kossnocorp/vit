@@ -1,5 +1,4 @@
 use crate::cli::prelude::*;
-use crate::vendor::add;
 
 #[derive(Args)]
 pub struct VitCliCmdAdd {
@@ -12,6 +11,6 @@ pub struct VitCliCmdAdd {
 
 impl VitCliCmdAdd {
     pub async fn run(&self) -> Result<()> {
-        add(self.manifest_args.manifest.as_deref(), &self.file).await
+        VitVendor::add(self.manifest_args.manifest.as_deref(), &self.file).await
     }
 }
