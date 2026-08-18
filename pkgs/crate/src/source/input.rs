@@ -14,13 +14,17 @@ impl VitSourceInput {
         bail!("Unsupported source {input:?}; expected gh:owner/repo/path@version or an HTTP URL")
     }
 
-    pub fn parse_manifest_target(key: &str, version: &str) -> Result<Box<dyn VitTarget>> {
-        let input = if key.starts_with("gh:") {
+    pub fn parse_manifest_target(
+        key: &VitManifestTargetUrl,
+        version: &VitManifestSourceVersion,
+    ) -> Result<Box<dyn VitTarget>> {
+        let input = if key.as_str().starts_with("gh:") {
             format!("{key}@{version}")
         } else {
-            key.to_owned()
+            key.as_str().to_owned()
         };
-        let target = Self::parse_target(&input)?;
+        let target = Self::parse_target(&input)
+            .with_context(|| format!("Invalid manifest target {key:?}"))?;
         ensure!(
             target.version() == version,
             "Manifest version {version:?} does not match source {key:?}"
@@ -52,14 +56,21 @@ mod tests {
 
     #[test]
     fn restores_targets_from_manifest_entries() {
-        let github =
-            VitSourceInput::parse_manifest_target("gh:js-fns/js-fns/vitest.config.ts", "main")
-                .unwrap();
-        assert_eq!(github.version(), "main");
+        let github = VitSourceInput::parse_manifest_target(
+            &VitManifestTargetUrl::new("gh:js-fns/js-fns/vitest.config.ts"),
+            &VitManifestSourceVersion::new("main"),
+        )
+        .unwrap();
+        assert_eq!(github.version(), &VitManifestSourceVersion::new("main"));
 
         let url = "https://example.com/assets/file.js";
-        let http = VitSourceInput::parse_manifest_target(url, url).unwrap();
-        assert_eq!(http.key(), url);
-        assert!(VitSourceInput::parse_manifest_target(url, "other").is_err());
+        let key = VitManifestTargetUrl::new(url);
+        let http = VitSourceInput::parse_manifest_target(&key, &VitManifestSourceVersion::new(url))
+            .unwrap();
+        assert_eq!(http.key(), &key);
+        assert!(
+            VitSourceInput::parse_manifest_target(&key, &VitManifestSourceVersion::new("other"))
+                .is_err()
+        );
     }
 }

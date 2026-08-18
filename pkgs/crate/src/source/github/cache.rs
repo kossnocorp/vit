@@ -72,7 +72,7 @@ impl VitGitHubCache {
         };
         configure_origin(&repo, url)?;
 
-        let cached_oid = Oid::from_str(&target.version)
+        let cached_oid = Oid::from_str(target.version.as_str())
             .ok()
             .filter(|oid| repo.find_commit(*oid).is_ok());
         let commit = if let Some(oid) = cached_oid {
@@ -105,7 +105,7 @@ impl VitGitHubCache {
         )?;
         let entry = commit
             .tree()?
-            .get_path(Path::new(&target.path))
+            .get_path(Path::new(target.path.as_str()))
             .with_context(|| format!("{} is not present at commit {}", target.path, commit.id()))?;
         let blob_id = entry.id();
         if repo.find_blob(blob_id).is_err() {
@@ -156,9 +156,9 @@ fn git(repo: &Path, args: &[&str]) -> Result<()> {
     Ok(())
 }
 
-fn resolve_remote_ref(repo: &Repository, version: &str) -> Result<String> {
-    if version.len() == 40 && Oid::from_str(version).is_ok() {
-        return Ok(version.to_owned());
+fn resolve_remote_ref(repo: &Repository, version: &VitManifestSourceVersion) -> Result<String> {
+    if version.as_str().len() == 40 && Oid::from_str(version.as_str()).is_ok() {
+        return Ok(version.as_str().to_owned());
     }
 
     let mut remote = repo.find_remote("origin")?;

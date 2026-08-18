@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 #[derive(Debug, Deserialize, Serialize, PartialEq)]
 pub struct VitLockFile {
-    pub version: String,
+    pub version: VitManifestSourceVersion,
     pub revision: String,
     pub hash: String,
     pub source: String,
@@ -14,7 +14,7 @@ impl VitLockFile {
         let hash = Sha256::digest(&download.bytes);
         let path = paths.target(target);
         VitLockFile {
-            version: target.version().to_owned(),
+            version: target.version().clone(),
             revision: download.revision.clone(),
             hash: format!("sha256:{hash:x}"),
             source: target.source_url().to_owned(),

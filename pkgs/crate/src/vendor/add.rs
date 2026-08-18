@@ -9,8 +9,9 @@ impl VitVendor {
             bail!("Failed to initialize Vit state, expected initialized state");
         };
 
+        let targets = state.manifest.targets()?;
         ensure!(
-            !state.manifest.has(target.key()),
+            !targets.contains_key(target.key()),
             "{} is already present in {}",
             target.key(),
             state.paths.manifest.display()
@@ -25,7 +26,7 @@ impl VitVendor {
         download.write(&destination).await?;
 
         state.manifest.add(target.key(), target.version());
-        state.lock.files.insert(target.key().to_owned(), lock_entry);
+        state.lock.files.insert(target.key().clone(), lock_entry);
         state.manifest.write_toml(&state.paths.manifest).await?;
         state.lock.write_toml(&state.paths.lock).await?;
 

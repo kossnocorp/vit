@@ -27,9 +27,9 @@ mod tests {
 
         let mut lock = VitLock::default();
         lock.files.insert(
-            "gh:owner/repo/stale.txt".to_owned(),
+            VitManifestTargetUrl::new("gh:owner/repo/stale.txt"),
             VitLockFile {
-                version: "main".to_owned(),
+                version: VitManifestSourceVersion::new("main"),
                 revision: "revision".to_owned(),
                 hash: "sha256:stale".to_owned(),
                 source: "https://example.com/stale.txt".to_owned(),

@@ -22,9 +22,9 @@ pub trait VitSource: Send + Sync {
 }
 
 pub trait VitTarget: Any + Send + Sync {
-    fn key(&self) -> &str;
+    fn key(&self) -> &VitManifestTargetUrl;
 
-    fn version(&self) -> &str;
+    fn version(&self) -> &VitManifestSourceVersion;
 
     fn source_url(&self) -> &str;
 

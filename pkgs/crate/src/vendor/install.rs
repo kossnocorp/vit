@@ -15,16 +15,17 @@ impl VitVendor {
         };
 
         let mut installed = 0;
+        let targets = state.manifest.targets()?;
 
-        for (key, version) in state.manifest.iter() {
-            let target = VitSourceInput::parse_manifest_target(key, version)?;
+        for (key, target) in &targets {
+            let version = target.version();
             let destination = state.paths.target(target.as_ref());
             let current = state.lock.files.get(key);
             let locked_destination = current
                 .map(|entry| Self::lock_destination(&state.paths, &entry.path))
                 .transpose()?;
             let is_current = if let Some(entry) = current {
-                entry.version == version
+                &entry.version == version
                     && locked_destination.as_ref() == Some(&destination)
                     && Self::file_matches(&destination, &entry.hash).await?
             } else {
@@ -44,7 +45,7 @@ impl VitVendor {
             if let Some(previous) = locked_destination.filter(|path| path != &destination) {
                 Self::remove_locked_file(&previous, &state.paths.root.join("vendor")).await?;
             }
-            state.lock.files.insert(key.to_owned(), next);
+            state.lock.files.insert(key.clone(), next);
             installed += 1;
         }
 
@@ -52,7 +53,7 @@ impl VitVendor {
             .lock
             .files
             .keys()
-            .filter(|key| !state.manifest.has(key.as_str()))
+            .filter(|key| !targets.contains_key(*key))
             .cloned()
             .collect::<Vec<_>>();
         for key in &stale {

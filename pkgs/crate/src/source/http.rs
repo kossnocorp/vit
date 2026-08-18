@@ -9,7 +9,8 @@ pub struct VitSourceHttp;
 #[derive(Clone, Debug, PartialEq)]
 pub struct VitSourceHttpTarget {
     url: Url,
-    key: String,
+    key: VitManifestTargetUrl,
+    version: VitManifestSourceVersion,
     vendor_path: PathBuf,
 }
 
@@ -39,8 +40,10 @@ impl VitSource for VitSourceHttp {
             None => host.to_owned(),
         };
 
+        let key = url.to_string();
         Ok(Some(Box::new(VitSourceHttpTarget {
-            key: url.to_string(),
+            key: VitManifestTargetUrl::new(&key),
+            version: VitManifestSourceVersion::new(&key),
             vendor_path: PathBuf::from("@http").join(authority).join(path),
             url,
         })))
@@ -74,16 +77,16 @@ impl VitSource for VitSourceHttp {
 }
 
 impl VitTarget for VitSourceHttpTarget {
-    fn key(&self) -> &str {
+    fn key(&self) -> &VitManifestTargetUrl {
         &self.key
     }
 
-    fn version(&self) -> &str {
-        &self.key
+    fn version(&self) -> &VitManifestSourceVersion {
+        &self.version
     }
 
     fn source_url(&self) -> &str {
-        &self.key
+        self.key.as_str()
     }
 
     fn vendor_path(&self) -> PathBuf {
@@ -111,7 +114,10 @@ mod tests {
             .parse("https://example.com/assets/file.js?raw=1")
             .unwrap()
             .unwrap();
-        assert_eq!(target.key(), "https://example.com/assets/file.js?raw=1");
+        assert_eq!(
+            target.key(),
+            &VitManifestTargetUrl::new("https://example.com/assets/file.js?raw=1")
+        );
         assert_eq!(
             target.vendor_path(),
             Path::new("@http/example.com/assets/file.js")

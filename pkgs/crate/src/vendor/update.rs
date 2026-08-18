@@ -9,13 +9,15 @@ impl VitVendor {
             bail!("Failed to initialize Vit state, expected initialized state");
         };
 
-        let version = state.manifest.get(target.key()).with_context(|| {
+        let targets = state.manifest.targets()?;
+        let manifest_target = targets.get(target.key()).with_context(|| {
             format!(
                 "{} is not present in {}",
                 target.key(),
                 state.paths.manifest.display()
             )
         })?;
+        let version = manifest_target.version();
 
         ensure!(
             version == target.version(),
@@ -44,7 +46,7 @@ impl VitVendor {
 
         if changed {
             download.write(&destination).await?;
-            state.lock.files.insert(target.key().to_owned(), next);
+            state.lock.files.insert(target.key().clone(), next);
             state.lock.write_toml(&state.paths.lock).await?;
             println!("Updated {}", target.key());
         } else {

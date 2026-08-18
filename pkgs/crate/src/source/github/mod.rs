@@ -9,11 +9,11 @@ pub struct VitSourceGitHub;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct VitSourceGitHubTarget {
-    key: String,
+    key: VitManifestTargetUrl,
     owner: String,
     repo: String,
-    path: String,
-    version: String,
+    path: VitManifestTargetPath,
+    version: VitManifestSourceVersion,
     source_url: String,
 }
 
@@ -55,11 +55,11 @@ impl VitSource for VitSourceGitHub {
         ensure!(valid_ref, "Version must be a valid Git ref or commit SHA");
 
         Ok(Some(Box::new(VitSourceGitHubTarget {
-            key: format!("gh:{source}"),
+            key: VitManifestTargetUrl::new(format!("gh:{source}")),
             owner: owner.to_owned(),
             repo: repo.to_owned(),
-            path: path.to_owned(),
-            version: version.to_owned(),
+            path: VitManifestTargetPath::new(path),
+            version: VitManifestSourceVersion::new(version),
             source_url: format!("https://github.com/{owner}/{repo}/blob/{version}/{path}"),
         })))
     }
@@ -75,11 +75,11 @@ impl VitSource for VitSourceGitHub {
 }
 
 impl VitTarget for VitSourceGitHubTarget {
-    fn key(&self) -> &str {
+    fn key(&self) -> &VitManifestTargetUrl {
         &self.key
     }
 
-    fn version(&self) -> &str {
+    fn version(&self) -> &VitManifestSourceVersion {
         &self.version
     }
 
@@ -90,7 +90,7 @@ impl VitTarget for VitSourceGitHubTarget {
     fn vendor_path(&self) -> PathBuf {
         PathBuf::from(format!("@{}", self.owner))
             .join(&self.repo)
-            .join(&self.path)
+            .join(self.path.as_str())
     }
 
     fn source(&self) -> &'static dyn VitSource {
@@ -112,8 +112,11 @@ mod tests {
             .parse("gh:js-fns/js-fns/vitest.config.ts@main")
             .unwrap()
             .unwrap();
-        assert_eq!(target.key(), "gh:js-fns/js-fns/vitest.config.ts");
-        assert_eq!(target.version(), "main");
+        assert_eq!(
+            target.key(),
+            &VitManifestTargetUrl::new("gh:js-fns/js-fns/vitest.config.ts")
+        );
+        assert_eq!(target.version(), &VitManifestSourceVersion::new("main"));
         assert_eq!(
             target.vendor_path(),
             Path::new("@js-fns/js-fns/vitest.config.ts")
