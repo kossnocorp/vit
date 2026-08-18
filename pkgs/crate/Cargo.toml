@@ -5,7 +5,7 @@ edition = "2024"
 description = "Vendored dependencies manager"
 authors = ["Sasha Koss <koss@nocorp.me>"]
 license = "MIT"
-repository = "https://github.com/kossnocorp/vendorit"
+repository = "https://github.com/kossnocorp/vit"
 
 [[bin]]
 name = "vit"
