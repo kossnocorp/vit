@@ -7,6 +7,10 @@ authors = ["Sasha Koss <koss@nocorp.me>"]
 license = "MIT"
 repository = "https://github.com/kossnocorp/vendorit"
 
+[[bin]]
+name = "vit"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = "1.0.104"
 async-trait = "0.1.89"

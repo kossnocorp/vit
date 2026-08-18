@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  qa:
+    name: Run QA
+    uses: ./.github/workflows/qa.yml
+    with:
+      build_artifact_suffix: ${{ github.ref_name }}
+
+  release:
+    name: Publish GitHub Release
+    needs: qa
+    runs-on: ubuntu-latest
+    permissions:
+      attestations: write
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Dev Env
+        uses: ./.github/actions/setup
+        with:
+          target-key: release
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v6
+        with:
+          pattern: "vit-${{ github.ref_name }}-*"
+          path: downloaded-artifacts
+
+      - name: Collect Release Assets
+        shell: bash
+        run: |
+          mkdir -p release-assets
+          for artifact_dir in downloaded-artifacts/*; do
+            [ -d "$artifact_dir" ] || continue
+            artifact_name="$(basename "$artifact_dir")"
+            for file in "$artifact_dir"/*; do
+              [ -f "$file" ] || continue
+              cp "$file" "release-assets/$artifact_name"
+            done
+          done
+
+      - name: Attest Release Assets
+        id: attest
+        uses: actions/attest@v4
+        with:
+          subject-path: release-assets/*
+
+      - name: Create GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          notes="$(git-cliff --latest --strip all --tag-pattern '^v\d+\.\d+\.\d+')"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --notes "$notes"
+          else
+            gh release create "$TAG" --notes "$notes" --verify-tag
+          fi
+
+      - name: Upload Release Assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release upload "$TAG" \
+            release-assets/* \
+            "${{ steps.attest.outputs.bundle-path }}" \
+            --clobber

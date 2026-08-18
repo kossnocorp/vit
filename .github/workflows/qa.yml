@@ -1,0 +1,47 @@
+name: QA
+
+on:
+  workflow_call:
+    inputs:
+      build_artifact_suffix:
+        description: Suffix forwarded to build workflow artifact names.
+        required: false
+        type: string
+  push:
+    branches:
+      - main
+
+jobs:
+  qa:
+    name: QA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v6
+
+      - name: Set Up Dev Env
+        uses: ./.github/actions/setup
+        with:
+          target-key: qa
+
+      - name: Check Formatting
+        run: cargo fmt --all --check
+
+      - name: Run Clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Run Unit Tests
+        run: cargo test --locked --workspace --all-features
+
+      - name: Save Cache
+        if: always()
+        uses: ./.github/actions/cache-save
+        with:
+          target-key: qa
+
+  build:
+    name: Build Binaries
+    uses: ./.github/workflows/build.yml
+    with:
+      artifact_suffix: ${{ github.event_name == 'workflow_call' && inputs.build_artifact_suffix || '' }}
