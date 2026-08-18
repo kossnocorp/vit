@@ -34,8 +34,6 @@ jobs:
 
       - name: Set Up Dev Env
         uses: ./.github/actions/setup
-        with:
-          target-key: build-${{ matrix.target }}
 
       - name: Add Rust Target
         run: rustup target add ${{ matrix.target }}
@@ -60,8 +58,6 @@ jobs:
           path: target/${{ matrix.target }}/release/vit${{ steps.binary_extension.outputs.value }}
           if-no-files-found: error
 
-      - name: Save Target Cache
+      - name: Display Stats
         if: always()
-        uses: ./.github/actions/cache-save/target
-        with:
-          target-key: build-${{ matrix.target }}
+        uses: ./.github/actions/stats

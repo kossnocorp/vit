@@ -29,8 +29,6 @@ jobs:
 
       - name: Set Up Dev Env
         uses: ./.github/actions/setup
-        with:
-          target-key: release
 
       - name: Download Build Artifacts
         uses: actions/download-artifact@v6
@@ -80,3 +78,7 @@ jobs:
             release-assets/* \
             "${{ steps.attest.outputs.bundle-path }}" \
             --clobber
+
+      - name: Display Stats
+        if: always()
+        uses: ./.github/actions/stats

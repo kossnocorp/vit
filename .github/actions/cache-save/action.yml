@@ -1,11 +1,6 @@
 name: Save Cache
 description: Save development environment caches.
 
-inputs:
-  target-key:
-    required: true
-    description: Key segment used for the Cargo target cache.
-
 runs:
   using: composite
 
@@ -77,11 +72,6 @@ runs:
           ~/.cargo/binstall
           ~/.cargo/env
         key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-
-    - name: Save Target Cache
-      uses: ./.github/actions/cache-save/target
-      with:
-        target-key: ${{ inputs.target-key }}
 
     - name: Get pnpm Store Path
       id: pnpm-store

@@ -1,15 +1,14 @@
 name: Set Up Dev Env
 description: Set up development tools, dependencies, and restored caches.
 
-inputs:
-  target-key:
-    required: true
-    description: Key segment used for the Cargo target cache.
-
 runs:
   using: composite
 
   steps:
+    - name: Configure Rust Compilation
+      shell: bash
+      run: echo "CARGO_INCREMENTAL=0" >> "$GITHUB_ENV"
+
     - name: Install mise
       uses: jdx/mise-action@v4
       with:
@@ -61,14 +60,20 @@ runs:
         mise trust --yes
         mise install
 
-    - name: Restore Target Cache
-      uses: actions/cache/restore@v5
+    - name: Configure sccache Credentials
+      uses: actions/github-script@v9
       with:
-        path: target
-        key: target-${{ runner.os }}-${{ inputs.target-key }}-${{ github.sha }}
-        restore-keys: |
-          target-${{ runner.os }}-${{ inputs.target-key }}-
-          target-${{ runner.os }}-
+        script: |
+          core.exportVariable('ACTIONS_RESULTS_URL', process.env.ACTIONS_RESULTS_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+    - name: Configure sccache
+      shell: bash
+      run: |
+        echo "SCCACHE_GHA_ENABLED=on" >> "$GITHUB_ENV"
+        echo "ACTIONS_CACHE_SERVICE_V2=on" >> "$GITHUB_ENV"
+        echo "SCCACHE_PATH=$(mise which sccache)" >> "$GITHUB_ENV"
+        echo "RUSTC_WRAPPER=$(mise which sccache)" >> "$GITHUB_ENV"
 
     - name: Get pnpm Store Path
       id: pnpm-store

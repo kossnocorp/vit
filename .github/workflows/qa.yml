@@ -22,8 +22,6 @@ jobs:
 
       - name: Set Up Dev Env
         uses: ./.github/actions/setup
-        with:
-          target-key: qa
 
       - name: Check Formatting
         run: cargo fmt --all --check
@@ -37,8 +35,10 @@ jobs:
       - name: Save Cache
         if: always()
         uses: ./.github/actions/cache-save
-        with:
-          target-key: qa
+
+      - name: Display Stats
+        if: always()
+        uses: ./.github/actions/stats
 
   build:
     name: Build Binaries

@@ -15,6 +15,9 @@ node = "lts"
 # Release
 git-cliff = "latest"
 
+# Build
+sccache = "latest"
+
 
 # Settings =====================================================================
 
