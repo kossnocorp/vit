@@ -2,11 +2,6 @@ name: QA
 
 on:
   workflow_call:
-    inputs:
-      build_artifact_suffix:
-        description: Suffix forwarded to build workflow artifact names.
-        required: false
-        type: string
   push:
     branches:
       - main
@@ -39,9 +34,3 @@ jobs:
       - name: Display Stats
         if: always()
         uses: ./.github/actions/stats
-
-  build:
-    name: Build Binaries
-    uses: ./.github/workflows/build.yml
-    with:
-      artifact_suffix: ${{ github.event_name == 'workflow_call' && inputs.build_artifact_suffix || '' }}
