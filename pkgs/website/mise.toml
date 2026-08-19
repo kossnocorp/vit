@@ -7,7 +7,7 @@ run = "pnpm exec astro build"
 depends = "gen/types"
 
 [tasks.deploy]
-run = "pnpm exec wrangler deploy"
+run = "fnox exec -- pnpm exec wrangler deploy"
 depends = "build"
 
 [tasks."gen/types"]

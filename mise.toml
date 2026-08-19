@@ -12,11 +12,10 @@ config_roots = ["pkgs/*"]
 node = "lts"
 "npm:pnpm" = "latest"
 
-# Release
-git-cliff = "latest"
-
-# Build
-sccache = "latest"
+# Tools
+git-cliff = "latest" # Change log generator
+sccache = "latest" # Rust compiler cache
+fnox = "latest" # Secrets
 
 
 # Settings =====================================================================
