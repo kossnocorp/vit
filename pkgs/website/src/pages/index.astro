@@ -1,0 +1,39 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Vit</title>
+  </head>
+  <body>
+    <main class="max-w-5xl mx-auto px-4 py-20 flex flex-col gap-6">
+      <h1 class="text-3xl font-semibold text-center">
+        Vit - Vendored Dependencies Manager
+      </h1>
+
+      <p class="flex flex-col gap-4">
+        <h2 class="text-2xl font-semibold text-center">Install Vit</h2>
+
+        <ul class="flex flex-col gap-4">
+          <li class="flex flex-col gap-2">
+            <h3 class="text-lg font-medium text-center">macOS/Linux:</h3>
+            <pre
+              class="border border-slate-300 rounded-md px-2 py-1 w-full max-w-xl mx-auto"><code>curl -fsSL https://vit.fyi/install.sh | sh</code></pre>
+          </li>
+
+          <li class="flex flex-col gap-2">
+            <h3 class="text-lg font-medium text-center">Windows:</h3>
+            <pre
+              class="border border-slate-300 rounded-md px-2 py-1 w-full max-w-xl mx-auto"><code>irm https://vit.fyi/install.ps1 | iex</code></pre>
+          </li>
+        </ul>
+      </p>
+    </main>
+  </body>
+</html>

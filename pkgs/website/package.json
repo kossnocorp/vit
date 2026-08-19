@@ -1,0 +1,16 @@
+{
+  "name": "vit.fyi",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "astro": "7.2.3"
+  },
+  "devDependencies": {
+    "@astrojs/cloudflare": "14.2.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "^22.20.1",
+    "tailwindcss": "4.2.2",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.123.0"
+  }
+}
